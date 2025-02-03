@@ -5,7 +5,7 @@ import altair as alt
 
 # Page configuration
 st.set_page_config(
-    page_title="Iris Classification",
+    page_title="Bank-additional Classification",
     page_icon="assets/icon/icon.png",  # Assurez-vous que ce chemin est correct
     layout="wide",
     initial_sidebar_state="expanded"
@@ -16,27 +16,39 @@ try:
     alt.themes.enable("dark")
 except Exception as e:
     st.warning(f"Le thème 'dark' n'a pas pu être activé : {e}")
+# Initialize page_selection in session state if not already set
+if 'page_selection' not in st.session_state:
+    st.session_state.page_selection = 'about'  # Default page
 
-# Ensure session state is initialized
-if "page_selection" not in st.session_state:
-    st.session_state.page_selection = "about"
+# Function to update page_selection
+def set_page_selection(page):
+    st.session_state.page_selection = page
 
-# -------------------------
-# Sidebar navigation
 with st.sidebar:
-    st.title("Iris Classification")
+
+    st.title('Bank Classification')
+
+    # Page Button Navigation
     st.subheader("Pages")
 
-    # Page navigation buttons
-    pages = {
-        "About": "about",
-        "Dataset": "dataset",
-        "EDA": "eda",
-        "Data Cleaning / Pre-processing": "data_cleaning",
-        "Machine Learning": "machine_learning",
-        "Prediction": "prediction",
-        "Conclusion": "conclusion",
-    }
+    if st.button("About", use_container_width=True, on_click=set_page_selection, args=('about',)):
+        st.session_state.page_selection = 'about'
+    
+    if st.button("Dataset", use_container_width=True, on_click=set_page_selection, args=('dataset',)):
+        st.session_state.page_selection = 'dataset'
+        
+    if st.button("EDA", use_container_width=True, on_click=set_page_selection, args=('eda',)):
+        st.session_state.page_selection = "eda"
+
+    if st.button("Machine Learning", use_container_width=True, on_click=set_page_selection, args=('machine_learning',)): 
+        st.session_state.page_selection = "machine_learning"
+
+    if st.button("Prediction", use_container_width=True, on_click=set_page_selection, args=('prediction',)): 
+        st.session_state.page_selection = "prediction"
+
+    if st.button("Conclusion", use_container_width=True, on_click=set_page_selection, args=('conclusion',)):
+        st.session_state.page_selection = "conclusion" 
+
 
     # Save the selected page in the session state
     selected_page = st.radio("Navigate to:", list(pages.keys()))
@@ -53,16 +65,16 @@ with st.sidebar:
 # -------------------------
 # Page content logic
 def load_data():
-    """Function to load the Iris dataset."""
+    """Function to load the Bank-additional-full dataset."""
     try:
-        return pd.read_csv("iris.csv", delimiter=",")
+        return pd.read_csv("bank-additional-fall.csv", delimiter=";")
     except FileNotFoundError:
-        st.error("Le fichier 'iris.csv' est introuvable. Assurez-vous qu'il est dans le bon répertoire.")
+        st.error("Le fichier 'bank-additional-faull.csv' est introuvable. Assurez-vous qu'il est dans le bon répertoire.")
         return pd.DataFrame()  # Return an empty DataFrame if the file is missing
 
 def render_about():
     """Renders the About page."""
-    st.title("ISJM BI - Exploration des données des Iris")
+    st.title("ISJM BI - Exploration des données de Banque-télé-Marketing")
     st.subheader("Description des données")
     st.write("Cette application explore les données des Iris, met en œuvre des modèles d'apprentissage automatique et visualise les résultats.")
     st.write("Elle inclut une analyse exploratoire, un pré-traitement des données, et des prédictions basées sur des modèles de classification.")
@@ -73,7 +85,7 @@ def render_dataset(df):
     """Renders the Dataset page."""
     st.title("Dataset Overview")
     if df.empty:
-        st.error("Aucune donnée à afficher. Veuillez vérifier le fichier iris.csv.")
+        st.error("Aucune donnée à afficher. Veuillez vérifier le fichier bank-additional-full.csv.")
     else:
         st.dataframe(df) 
         st.write("Shape of the dataset:", df.shape)
@@ -83,13 +95,13 @@ def render_eda(df):
     st.title("Exploratory Data Analysis (EDA)")
 
     # Vérifier si les colonnes nécessaires sont présentes
-    required_columns = {"petal_length", "petal_width", "sepal_length", "sepal_width", "species"}
+    required_columns = {"age", "job", "marital", "education", "default", "housing", "loan", "contact", "month", "day_of_week", "duration", "campaign", "pdays", "previous", "poutcome", "emp.var.rate", "cons.price.idx", "cons.conf.idx", "euribor3m"," nr.employed", "y"}
     if not required_columns.issubset(df.columns):
         st.error(f"Le fichier de données doit contenir les colonnes suivantes : {required_columns}")
         return
 
-    # Premier graphique : petal_length vs petal_width
-    st.subheader("Relation entre la longueur et la largeur des pétales")
+    # Premier graphique : job vs y
+    st.subheader("Relation entre le job et la décision du client")
     chart1 = alt.Chart(df).mark_point().encode(
         x="petal_length",
         y="petal_width",
@@ -151,7 +163,6 @@ page_functions = {
     "about": render_about,
     "dataset": lambda: render_dataset(load_data()),
     "eda": lambda: render_eda(load_data()),
-    "data_cleaning": not_implemented,
     "machine_learning": not_implemented,
     "prediction": not_implemented,
     "conclusion": not_implemented,
