@@ -104,7 +104,7 @@ def render_eda(df):
 
     # Premier graphique : job vs y
     st.subheader("Relation entre le job et la décision du client")
-   if "unknown" in df["job"].values:
+    if "unknown" in df["job"].values:
     mode_job = df["job"].mode()[0]  # Trouver le(s) mode(s)
     if not mode_value.empty:
         df["job"] = df["job"].replace("unknown", mode_job[0])  # Remplacer "unknown"     
@@ -114,16 +114,6 @@ def render_eda(df):
 sns.countplot(x=df["y"], hue=df["job"])
 plt.show()  
 
-
-    # Deuxième graphique : sepal_length vs sepal_width
-    st.subheader("Relation entre la longueur et la largeur des sépales")
-    chart2 = alt.Chart(df).mark_circle(size=60).encode(
-        x="sepal_length",
-        y="sepal_width",
-        color="species",
-        tooltip=["sepal_length", "sepal_width", "petal_length", "petal_width"]
-    ).interactive()
-    st.altair_chart(chart2, use_container_width=True)
 
     # Ajouter un tableau récapitulatif des statistiques descriptives
     st.subheader("Statistiques descriptives")
