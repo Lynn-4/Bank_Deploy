@@ -2,6 +2,8 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+import matplotlib.pyplot as plt 
+import seaborn as sns 
 
 # Page configuration
 st.set_page_config(
@@ -67,19 +69,19 @@ with st.sidebar:
 def load_data():
     """Function to load the Bank-additional-full dataset."""
     try:
-        return pd.read_csv("bank-additional-fall.csv", delimiter=";")
+        return pd.read_csv("bank-additional-full.csv", delimiter=";")
     except FileNotFoundError:
-        st.error("Le fichier 'bank-additional-faull.csv' est introuvable. Assurez-vous qu'il est dans le bon répertoire.")
+        st.error("Le fichier 'bank-additional-full.csv' est introuvable. Assurez-vous qu'il est dans le bon répertoire.")
         return pd.DataFrame()  # Return an empty DataFrame if the file is missing
 
 def render_about():
     """Renders the About page."""
-    st.title("ISJM BI - Exploration des données de Banque-télé-Marketing")
+    st.title("Exploration des données de Banque-Télé-Marketing")
     st.subheader("Description des données")
-    st.write("Cette application explore les données des Iris, met en œuvre des modèles d'apprentissage automatique et visualise les résultats.")
+    st.write("Cette application explore les données de jeu de données d'une banque, met en œuvre des modèles d'apprentissage automatique et visualise les résultats.")
     st.write("Elle inclut une analyse exploratoire, un pré-traitement des données, et des prédictions basées sur des modèles de classification.")
     st.markdown("**Construit avec :** Streamlit, Pandas, Altair")
-    st.markdown("**Auteur :** Stéphane C. K. Tékouabou")
+    st.markdown("**Auteur :** POUOKAM_Lynn")
 
 def render_dataset(df):
     """Renders the Dataset page."""
@@ -102,13 +104,16 @@ def render_eda(df):
 
     # Premier graphique : job vs y
     st.subheader("Relation entre le job et la décision du client")
-    chart1 = alt.Chart(df).mark_point().encode(
-        x="petal_length",
-        y="petal_width",
-        color="species",
-        tooltip=["petal_length", "petal_width", "species"]
-    ).interactive()
-    st.altair_chart(chart1, use_container_width=True)
+   if "unknown" in df["job"].values:
+    mode_job = df["job"].mode()[0]  # Trouver le(s) mode(s)
+    if not mode_value.empty:
+        df["job"] = df["job"].replace("unknown", mode_job[0])  # Remplacer "unknown"     
+# Afficher le résultat
+    print(df.groupby(['y', 'job'])['job'].count().unstack(level=0)) 
+# Afficher le graphe 
+sns.countplot(x=df["y"], hue=df["job"])
+plt.show()  
+
 
     # Deuxième graphique : sepal_length vs sepal_width
     st.subheader("Relation entre la longueur et la largeur des sépales")
