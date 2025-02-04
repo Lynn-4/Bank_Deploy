@@ -13,7 +13,7 @@ for col in bank.columns:
 
 # SEPARATION LES CARACTERISTIQUES ET LA CIBLE
 
-X = bank.drop(columns=["y"])  # Variables indépendantes
+X = bank.drop(columns=['y','contact','month','loan','day_of_week','duration','campaign','pdays','previous','emp.var.rate','cons.price.idx','cons.conf.idx','euribor3m','nr.employed'],axis=1])  # Variables indépendantes
 y = bank["y"]  # Variable cible
 
 # Séparation en ensemble d'entraînement (70%) et de test (30%)
@@ -46,3 +46,35 @@ model.fit(X, y)
 # Sauvegarder le modèle
 joblib.dump(model, 'modèle.pkl')
 print("Modèle sauvegardé sous 'modèle.pkl'") 
+
+# Prédiction sur l'ensemble de test
+    y_pred = clf.predict(x_test)
+
+    # Évaluation du modèle
+    st.write("Matrice de confusion :")
+    st.write(confusion_matrix(y_test, y_pred))
+    st.write("\nPrécision :", accuracy_score(y_test, y_pred))
+    
+
+with tabs[3]:
+    st.write("Prédictions")
+    #code python
+    model=joblib.load("modèle.pkl")
+    feature1=st.number_input("age",value=0.0)
+    feature2=st.number_input("job",value=0.0)
+    feature3=st.number_input("marital",value=0.0)
+    feature4=st.number_input("education",value=0.0)
+    feature5=st.number_input("default",value=0.0)
+    feature6=st.number_input("housing",value=0.0)
+    if st.button("prédire"):
+       input_data=np.array([[feature1,feature2,feature3,feature4,feature5,feature6]])
+       prediction=model.predict(input_data)
+       st.write(prediction[0].item())
+       if prediction==0:
+           st.write("Pas de souscription")
+       else:
+           st.write("Souscription")
+with tabs[4]:
+    st.write("Par POUOKAM_Lynn")
+    st.write("Management et Techniques Quantitatives")
+    st.write("Email: lynnpdea@gmail.com") 
