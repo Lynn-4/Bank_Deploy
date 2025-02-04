@@ -105,14 +105,14 @@ def render_eda(df):
     # Premier graphique : job vs y
     st.subheader("Relation entre le job et la décision du client")
     if "unknown" in df["job"].values:
-    mode_job = df["job"].mode()[0]  # Trouver le(s) mode(s)
-    if not mode_value.empty:
-        df["job"] = df["job"].replace("unknown", mode_job[0])  # Remplacer "unknown"     
-# Afficher le résultat
-    print(df.groupby(['y', 'job'])['job'].count().unstack(level=0)) 
+        mode_job = df["job"].mode()[0]  # Trouver le(s) mode(s)
+        if not mode_value.empty: 
+            df["job"] = df["job"].replace("unknown", mode_job[0])  # Remplacer "unknown"
+    # Afficher le résultat
+            print(df.groupby(['y', 'job'])['job'].count().unstack(level=0)) 
 # Afficher le graphe 
-sns.countplot(x=df["y"], hue=df["job"])
-plt.show()  
+            sns.countplot(x=df["y"], hue=df["job"])
+            plt.show()  
 
 
     # Ajouter un tableau récapitulatif des statistiques descriptives
