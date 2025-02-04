@@ -145,16 +145,18 @@ def render_eda(df):
     plt.title("Distribution de l'age") 
 
 # Histogramme de répartition du niveau scolaire et de la décison du client
-     st.subheader("Relation entre le niveau scoliare et la décision du client") 
-    if "unknown" in df["education"].values:
+     st.subheader("Relation entre le niveau scoliare et la décision du client")
+if "unknown" in df["education"].values:
         mode_education = df["education"].mode()[0]  # Trouver le(s) mode(s)
-        if not mode_value.empty: 
-            df["education"] = df["education"].replace("unknown", mode_education[0])  # Remplacer "unknown"
+    if not mode_value.empty: 
+        df["education"] = df["education"].replace("unknown", mode_education[0])  # Remplacer "unknown"
+        
     # Afficher le résultat
-            print(df.groupby(['y', 'education'])['education'].count().unstack(level=0)) 
+        print(df.groupby(['y', 'education'])['education'].count().unstack(level=0)) 
+        
 # Afficher le graphe 
-            sns.countplot(x=df["y"], hue=df["education"])
-            plt.show() 
+        sns.countplot(x=df["y"], hue=df["education"])
+        plt.show() 
 
  # Histogramme de répartiton des logements en fonction de la décision
      st.subheader("Relation entre le logement et la décision du client") 
