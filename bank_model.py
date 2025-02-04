@@ -74,6 +74,7 @@ with tabs[3]:
            st.write("Pas de souscription")
        else:
            st.write("Souscription")
+           
 with tabs[4]:
     st.write("Par POUOKAM_Lynn")
     st.write("Management et Techniques Quantitatives")
