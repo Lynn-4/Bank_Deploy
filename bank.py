@@ -103,7 +103,7 @@ def render_eda(df):
         return
 
     # Premier graphique : job vs y
-    st.subheader("Relation entre le job et la décision du client")
+    st.subheader("Relation entre le job et la décision du client") 
     if "unknown" in df["job"].values:
         mode_job = df["job"].mode()[0]  # Trouver le(s) mode(s)
         if not mode_value.empty: 
@@ -120,52 +120,55 @@ def render_eda(df):
     st.write(df.describe())
 
     # Histogrammes des distributions avec Altair
-    st.subheader("Histogrammes des caractéristiques")
-    numerical_columns = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
-    for col in numerical_columns:
-        st.write(f"Distribution de la caractéristique : **{col}**")
-        hist_chart = alt.Chart(df).mark_bar().encode(
-            x=alt.X(col, bin=alt.Bin(maxbins=30)),
-            y="count()",
-            color="species"
-        )
-        st.altair_chart(hist_chart, use_container_width=True)
+    st.subheader("Relation entre la situation matrimoniale et la décision du client") 
+    if "unknown" in df["marital"].values:
+        mode_marital = df["marital"].mode()[0]  # Trouver le(s) mode(s)
+        if not mode_value.empty: 
+            df["marital"] = df["marital"].replace("unknown", mode_marital[0])  # Remplacer "unknown"
+    # Afficher le résultat
+            print(df.groupby(['y', 'marital'])['marital'].count().unstack(level=0)) 
+# Afficher le graphe 
+            sns.countplot(x=df["y"], hue=df["marital"])
+            plt.show() 
 
-    # Nouveau graphique : distribution de PetalWidth
-    st.subheader("Distribution de la largeur des pétales (PetalWidth)")
-    st.write("Statistiques descriptives pour **PetalWidth** :")
+    # Nouveau graphique : distribution de l'age
+    st.subheader("Distribution de l'age")
+    st.write("Statistiques descriptives pour **age** :")
     st.write(df["petal_width"].describe())
 
-    # Graphique seaborn pour la distribution de PetalWidth
+# Graphique seaborn pour la distribution de 
     import matplotlib.pyplot as plt
     import seaborn as sns
 
     plt.figure(figsize=(15, 5))
-    sns.countplot(x="petal_width", data=df)
-    plt.title("Distribution de PetalWidth")
+    sns.countplot(x="age", data=df)
+    plt.title("Distribution de l'age") 
+
+# Histogramme de répartition du niveau scolaire et de la décison du client
+     st.subheader("Relation entre le niveau scoliare et la décision du client") 
+    if "unknown" in df["education"].values:
+        mode_education = df["education"].mode()[0]  # Trouver le(s) mode(s)
+        if not mode_value.empty: 
+            df["education"] = df["education"].replace("unknown", mode_education[0])  # Remplacer "unknown"
+    # Afficher le résultat
+            print(df.groupby(['y', 'education'])['education'].count().unstack(level=0)) 
+# Afficher le graphe 
+            sns.countplot(x=df["y"], hue=df["education"])
+            plt.show() 
+
+ # Histogramme de répartiton des logements en fonction de la décision
+     st.subheader("Relation entre le logement et la décision du client") 
+    if "unknown" in df["housing"].values:
+        mode_housing = df["housing"].mode()[0]  # Trouver le(s) mode(s)
+        if not mode_value.empty: 
+            df["housing"] = df["housing"].replace("unknown", mode_housing[0])  # Remplacer "unknown"
+    # Afficher le résultat
+            print(df.groupby(['y', 'housing'])['housing'].count().unstack(level=0)) 
+# Afficher le graphe 
+            sns.countplot(x=df["y"], hue=df["housing"])
+            plt.show() 
     
     # Afficher le graphique dans Streamlit
     st.pyplot(plt)
     plt.clf()  # Nettoyer pour éviter des conflits avec d'autres graphiques
     
-def not_implemented():
-    """Displays a placeholder for pages under development."""
-    st.title("Page en cours de développement")
-    st.write("Cette fonctionnalité sera bientôt disponible.")
-
-# Mapping page names to their respective functions
-page_functions = {
-    "about": render_about,
-    "dataset": lambda: render_dataset(load_data()),
-    "eda": lambda: render_eda(load_data()),
-    "machine_learning": not_implemented,
-    "prediction": not_implemented,
-    "conclusion": not_implemented,
-}
-
-# Display the content for the selected page
-page = st.session_state.page_selection
-if page in page_functions:
-    page_functions[page]()
-else:
-    st.error("Page introuvable.") 
